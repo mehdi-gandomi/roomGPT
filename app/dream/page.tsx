@@ -218,7 +218,7 @@ export default function DreamPage() {
                         className="rounded-2xl relative sm:mt-0 mt-2 cursor-zoom-in w-full h-96"
                         width={475}
                         height={475}
-                        onLoadingComplete={() => setRestoredLoaded(true)}
+                        onload={() => setRestoredLoaded(true)}
                       />
                     </a>
                   </div>
