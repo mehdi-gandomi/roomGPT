@@ -189,7 +189,7 @@ export default function DreamPage() {
               )}
               {!originalPhoto && <UploadDropZone />}
               {originalPhoto && !restoredImage && (
-                <Image
+                <img
                   alt="original photo"
                   src={originalPhoto}
                   className="rounded-2xl h-96"
@@ -201,7 +201,7 @@ export default function DreamPage() {
                 <div className="flex sm:space-x-4 sm:flex-row flex-col">
                   <div>
                     <h2 className="mb-1 font-medium text-lg">Original Room</h2>
-                    <Image
+                    <img
                       alt="original photo"
                       src={originalPhoto}
                       className="rounded-2xl relative w-full h-96"
@@ -212,7 +212,7 @@ export default function DreamPage() {
                   <div className="sm:mt-0 mt-8">
                     <h2 className="mb-1 font-medium text-lg">Generated Room</h2>
                     <a href={restoredImage} target="_blank" rel="noreferrer">
-                      <Image
+                      <img
                         alt="restored photo"
                         src={restoredImage}
                         className="rounded-2xl relative sm:mt-0 mt-2 cursor-zoom-in w-full h-96"
