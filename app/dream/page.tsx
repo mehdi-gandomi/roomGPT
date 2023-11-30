@@ -1,7 +1,7 @@
 "use client";
-
+import { v4 as uuidv4 } from 'uuid';
 import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
+import NextImage from "next/image";
 import { useState } from "react";
 import { UrlBuilder } from "@bytescale/sdk";
 import { UploadWidgetConfig } from "@bytescale/upload-widget";
@@ -51,6 +51,221 @@ export default function DreamPage() {
   const [photoName, setPhotoName] = useState<string | null>(null);
   const [theme, setTheme] = useState<themeType>("Modern");
   const [room, setRoom] = useState<roomType>("Living Room");
+  const [detectLoading, setDetectLoading] = useState<boolean>(false);
+  
+  const [detectedItems, setDetectedItems] = useState<any>([]);
+  const convertToBinary=async(imageUrl:any):Promise<Blob>=> {
+    return new Promise(async(resolve,reject)=>{
+      try {
+        // Fetch the image data
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+    
+        // Create FormData and append the image Blob
+       return resolve(blob) 
+      } catch (error) {
+        console.error('Error:', error);
+        return reject(error)
+      }
+    })
+  }
+  const getMeta=(url:any)=> {
+    return new Promise((resolve,reject)=>{
+      var img = new Image();
+      img.onload = function() {
+          var w = this.width;
+          var h = this.height;
+          resolve({ w: w, h: h });
+      };
+      img.src = url;
+    })
+    
+}
+  const detectAndSearch=async()=>{
+    // 
+    //   
+    setDetectedItems([])
+    setDetectLoading(true)
+    //   // Make the POST request
+    //   const postResponse = await fetch('YOUR_POST_ENDPOINT', {
+    //     method: 'POST',
+    //     body: formData,
+    //     // You may need to set headers depending on server requirements
+    //     // headers: {
+    //     //   'Content-Type': 'multipart/form-data',
+    //     // },
+    //   });
+  
+    //   // Handle the response
+    //   const result = await postResponse.json();
+    //   console.log('POST request result:', result);
+    const formData = new FormData();
+    const image=await convertToBinary(restoredImage)
+    const dimensions:any=await getMeta(restoredImage)
+    if(image){
+      console.log("image",image)
+      formData.append('file', image, 'convert.jpg'); // 'image' is the key name, adjust filename as needed
+    }
+    fetch("http://34.151.121.64/upload", {
+        headers: {
+            'Accept': 'application/json'
+        },
+        method: "POST",
+        body: formData
+    })
+    .then(function(res) {
+        if (!res.ok) {
+            throw new Error('Network response was not ok.');
+        }
+        return res.json(); // Parse the response JSON
+    })
+    .then(function(data) {
+        console.log(data); // Log the parsed JSON response
+        setDetectedItems(data)
+        setTimeout(()=>{
+          const children:any=[];
+          
+          data.forEach((item:any)=>{
+            console.log("pushing")
+            children.push({
+                "id": uuidv4(),
+                "title": "Spot",
+                "x": (item.x + ((dimensions.w - item.x)/2) * 100)/dimensions.w,
+                "y": (item.y + ((dimensions.h - item.y)/2) * 100)/dimensions.h,
+                "tooltip_content": [
+                    {
+                        "type": "Heading",
+                        "text": item.object,
+                        "heading": "h3",
+                        "other": {
+                            "id": "",
+                            "classes": "",
+                            "css": ""
+                        },
+                        "style": {
+                            "fontFamily": "sans-serif",
+                            "fontSize": 20.8,
+                            "lineHeight": "normal",
+                            "color": "#ffffff",
+                            "textAlign": "left"
+                        },
+                        "boxModel": {
+                            "width": "auto",
+                            "height": "auto",
+                            "margin": {
+                                "top": 0,
+                                "bottom": 0,
+                                "left": 0,
+                                "right": 0
+                            },
+                            "padding": {
+                                "top": 10,
+                                "bottom": 10,
+                                "left": 10,
+                                "right": 10
+                            }
+                        },
+                        "id": uuidv4()
+                    },
+                    {
+                        "type": "Paragraph",
+                        "text": "some test<br>",
+                        "other": {
+                            "id": "",
+                            "classes": "",
+                            "css": ""
+                        },
+                        "style": {
+                            "fontFamily": "sans-serif",
+                            "fontSize": 14,
+                            "lineHeight": 22,
+                            "color": "#ffffff",
+                            "textAlign": "left"
+                        },
+                        "boxModel": {
+                            "width": "auto",
+                            "height": "auto",
+                            "margin": {
+                                "top": 0,
+                                "bottom": 0,
+                                "left": 0,
+                                "right": 0
+                            },
+                            "padding": {
+                                "top": 10,
+                                "bottom": 10,
+                                "left": 10,
+                                "right": 10
+                            }
+                        },
+                        "id": uuidv4()
+                    },
+                    {
+                        "type": "Button",
+                        "text": "Click here",
+                        "url": "#",
+                        "script": "",
+                        "newTab": false,
+                        "other": {
+                            "id": "",
+                            "classes": "",
+                            "css": ""
+                        },
+                        "style": {
+                            "backgroundColor": "#2196f3",
+                            "borderRadius": 10,
+                            "fontFamily": "sans-serif",
+                            "fontWeight": 700,
+                            "fontSize": 14,
+                            "lineHeight": 44,
+                            "color": "#ffffff",
+                            "display": "inline-block"
+                        },
+                        "boxModel": {
+                            "width": "auto",
+                            "height": 44,
+                            "margin": {
+                                "top": 0,
+                                "bottom": 0,
+                                "left": 0,
+                                "right": 0
+                            },
+                            "padding": {
+                                "top": 10,
+                                "bottom": 10,
+                                "left": 10,
+                                "right": 10
+                            }
+                        },
+                        "id": uuidv4()
+                    }
+                ]
+            })
+          })
+        
+          const json={
+            "id": "7126a99f-83aa-4496-8b96-67efaf9a3f93",
+            "artboards": [
+                {
+                    "background_type": "image",
+                    "image_url": restoredImage,
+                    "children": children
+                }
+            ],
+            "version": "6.0.15",
+            "general": {
+                "name": "Untitled"
+            }
+        };
+        console.log(json)
+        ImageMapPro.init('#image-map-pro',json)
+        setDetectLoading(false)
+        },500)
+    })
+    .catch(function(error) {
+        console.error('There was a problem with the fetch operation:', error);
+    });
+  }
 
   const UploadDropZone = () => (
     <UploadDropzone
@@ -113,7 +328,7 @@ export default function DreamPage() {
                 <>
                   <div className="space-y-4 w-full max-w-sm">
                     <div className="flex mt-3 items-center space-x-3">
-                      <Image
+                      <NextImage
                         src="/number-1-white.svg"
                         width={30}
                         height={30}
@@ -133,7 +348,7 @@ export default function DreamPage() {
                   </div>
                   <div className="space-y-4 w-full max-w-sm">
                     <div className="flex mt-10 items-center space-x-3">
-                      <Image
+                      <NextImage
                         src="/number-2-white.svg"
                         width={30}
                         height={30}
@@ -151,7 +366,7 @@ export default function DreamPage() {
                   </div>
                   <div className="mt-4 w-full max-w-sm">
                     <div className="flex mt-6 w-96 items-center space-x-3">
-                      <Image
+                      <NextImage
                         src="/number-3-white.svg"
                         width={30}
                         height={30}
@@ -269,6 +484,27 @@ export default function DreamPage() {
                     Download Generated Room
                   </button>
                 )}
+                 {restoredLoaded && !detectLoading && (
+                  <button
+                    onClick={() => detectAndSearch()}
+                    className="bg-white rounded-full text-black border font-medium px-4 py-2 mt-8 hover:bg-gray-100 transition"
+                  >
+                    Detect & Search
+                  </button>
+                )}
+                {detectLoading && (
+                <button
+                  disabled
+                  className="bg-blue-500 rounded-full text-white font-medium px-4 pt-2 pb-3 mt-8 w-40"
+                >
+                  <span className="pt-4">
+                    <LoadingDots color="white" style="large" />
+                  </span>
+                </button>
+              )}
+              </div>
+              <div>
+                <div id="image-map-pro" style={{ marginTop:"1rem" }}></div>
               </div>
             </motion.div>
           </AnimatePresence>
