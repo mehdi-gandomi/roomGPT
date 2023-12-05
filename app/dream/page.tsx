@@ -170,7 +170,7 @@ export default function DreamPage() {
                     },
                     {
                         "type": "Paragraph",
-                        "text": "some test<br>",
+                        "text": `Accuracy: ${item.accuracy}%`,
                         "other": {
                             "id": "",
                             "classes": "",
