@@ -131,8 +131,8 @@ export default function DreamPage() {
             children.push({
                 "id": uuidv4(),
                 "title": "Spot",
-                "x": (item.x + ((dimensions.w - item.x)/2) * 100)/dimensions.w,
-                "y": (item.y + ((dimensions.h - item.y)/2) * 100)/dimensions.h,
+                "x": ((item.x + ((item.w - item.x)/2)) * 100)/dimensions.w,
+                "y": ((item.y + ((item.h - item.y)/2)) * 100)/dimensions.h,
                 "tooltip_content": [
                     {
                         "type": "Heading",
@@ -242,6 +242,52 @@ export default function DreamPage() {
                     }
                 ]
             })
+          //   children.push(  {
+          //     "id": uuidv4(),
+          //     "title": "Rect",
+          //     "type": "rect",
+          //   "tooltip_content": [
+          //         {
+          //             "type": "Paragraph",
+          //             "text": item.object,
+          //             "other": {
+          //                 "id": "",
+          //                 "classes": "",
+          //                 "css": ""
+          //             },
+          //             "style": {
+          //                 "fontFamily": "sans-serif",
+          //                 "fontSize": 14,
+          //                 "lineHeight": 22,
+          //                 "color": "#ffffff",
+          //                 "textAlign": "left"
+          //             },
+          //             "boxModel": {
+          //                 "width": "auto",
+          //                 "height": "auto",
+          //                 "margin": {
+          //                     "top": 0,
+          //                     "bottom": 0,
+          //                     "left": 0,
+          //                     "right": 0
+          //                 },
+          //                 "padding": {
+          //                     "top": 10,
+          //                     "bottom": 10,
+          //                     "left": 10,
+          //                     "right": 10
+          //                 }
+          //             },
+          //             "id": uuidv4()
+          //         }
+          //     ],
+          //     "x_image_background": (item.x * 100)/dimensions.w,
+          //         "x": (item.x * 100)/dimensions.w,
+          //     "y": (item.y * 100)/dimensions.h,
+          //     "width": (item.w - item.x),
+          //     "height": (item.h - item.y),
+          //   "y_image_background": (item.x * 100)/dimensions.w
+          // })
           })
         
           const json={
@@ -465,6 +511,7 @@ export default function DreamPage() {
                       setOriginalPhoto(null);
                       setRestoredImage(null);
                       setRestoredLoaded(false);
+                      setDetectedItems([])
                       setError(null);
                     }}
                     className="bg-blue-500 rounded-full text-white font-medium px-4 py-2 mt-8 hover:bg-blue-500/80 transition"
@@ -504,9 +551,10 @@ export default function DreamPage() {
                 </button>
               )}
               </div>
-              <div>
+              {detectedItems && detectedItems.length > 0 && <div>
                 <div id="image-map-pro" style={{ marginTop:"1rem" }}></div>
-              </div>
+              </div>}
+              
             </motion.div>
           </AnimatePresence>
         </ResizablePanel>
