@@ -9,6 +9,7 @@ import { UploadWidgetConfig } from "@bytescale/upload-widget";
 import { UploadDropzone } from "@bytescale/upload-widget-react";
 import { CompareSlider } from "../../components/CompareSlider";
 import Footer from "../../components/Footer";
+import WebcamCapture from "../../components/WebcamCapture";
 import Header from "../../components/Header";
 import LoadingDots from "../../components/LoadingDots";
 import ResizablePanel from "../../components/ResizablePanel";
@@ -554,7 +555,9 @@ export default function DreamPage() {
               {detectedItems && detectedItems.length > 0 && <div>
                 <div id="image-map-pro" style={{ marginTop:"1rem" }}></div>
               </div>}
-              
+              <div className="webcam-wrap">
+              <WebcamCapture/>
+              </div>
             </motion.div>
           </AnimatePresence>
         </ResizablePanel>

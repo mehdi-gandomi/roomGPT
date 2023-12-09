@@ -874,6 +874,11 @@ react-use-measure@^2.1.1:
   dependencies:
     debounce "^1.2.1"
 
+react-webcam@^7.2.0:
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/react-webcam/-/react-webcam-7.2.0.tgz#64141c4c7bdd3e956620500187fa3fcc77e1fd49"
+  integrity sha512-xkrzYPqa1ag2DP+2Q/kLKBmCIfEx49bVdgCCCcZf88oF+0NPEbkwYk3/s/C7Zy0mhM8k+hpdNkBLzxg8H0aWcg==
+
 react@^18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react/-/react-18.2.0.tgz#555bd98592883255fa00de14f1151a917b5d77d5"
@@ -1049,6 +1054,11 @@ uuid@^9.0.1:
   version "9.0.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.1.tgz#e188d4c8853cc722220392c424cd637f32293f30"
   integrity sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==
+
+webcamjs@^1.0.26:
+  version "1.0.26"
+  resolved "https://registry.yarnpkg.com/webcamjs/-/webcamjs-1.0.26.tgz#74b81cda13da61fcbb07f6e8658b403a3056821b"
+  integrity sha512-ruUdzb7MV4QUxO1TfIdAjzeEhB8+Y1GY6HhQTytij+rB98972XZ+mbMUGrjBvWRb975loKjqgELdYjVNMNRfFQ==
 
 wrappy@1:
   version "1.0.2"
