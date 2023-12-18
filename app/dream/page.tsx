@@ -18,7 +18,8 @@ import appendNewToName from "../../utils/appendNewToName";
 import downloadPhoto from "../../utils/downloadPhoto";
 import DropDown from "../../components/DropDown";
 import { roomType, rooms, themeType, themes } from "../../utils/dropdownTypes";
-
+import Switch from "react-switch";
+import * as Bytescale from "@bytescale/sdk";
 const options: UploadWidgetConfig = {
   apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
       ? process.env.NEXT_PUBLIC_UPLOAD_API_KEY
@@ -46,6 +47,7 @@ const options: UploadWidgetConfig = {
 export default function DreamPage() {
   const [originalPhoto, setOriginalPhoto] = useState<string | null>(null);
   const [restoredImage, setRestoredImage] = useState<string | null>(null);
+  const [captureImage, setCaptureImage] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [restoredLoaded, setRestoredLoaded] = useState<boolean>(false);
   const [sideBySide, setSideBySide] = useState<boolean>(false);
@@ -54,7 +56,7 @@ export default function DreamPage() {
   const [theme, setTheme] = useState<themeType>("Modern");
   const [room, setRoom] = useState<roomType>("Living Room");
   const [detectLoading, setDetectLoading] = useState<boolean>(false);
-  
+  const [capturedImage, setCapturedImage] = useState(null); // initialize it
   const [detectedItems, setDetectedItems] = useState<any>([]);
   const convertToBinary=async(imageUrl:any):Promise<Blob>=> {
     return new Promise(async(resolve,reject)=>{
@@ -70,6 +72,37 @@ export default function DreamPage() {
         return reject(error)
       }
     })
+  }
+  const onCameraCapture = async(file) =>{
+    setCapturedImage(file)
+    onSendCapture(file)
+    
+  }
+  const onSendCapture=async(file)=>{
+    const uploadManager = new Bytescale.UploadManager({
+      apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
+      ? process.env.NEXT_PUBLIC_UPLOAD_API_KEY
+      : "free"
+    });
+    const image=await uploadManager
+      .upload({
+        data:file
+      })
+      
+      
+          const imageName = image.originalFileName;
+          const imageUrl = UrlBuilder.url({
+            accountId: image.accountId,
+            filePath: image.filePath,
+            options: {
+              transformation: "preset",
+              transformationPreset: "thumbnail"
+            }
+          });
+          console.log(imageName,image,imageUrl)
+          setPhotoName(imageName);
+          setOriginalPhoto(imageUrl);
+          generatePhoto(imageUrl);
   }
   const getMeta=(url:any)=> {
     return new Promise((resolve,reject)=>{
@@ -330,6 +363,7 @@ export default function DreamPage() {
               transformationPreset: "thumbnail"
             }
           });
+          console.log(imageName,image,imageUrl)
           setPhotoName(imageName);
           setOriginalPhoto(imageUrl);
           generatePhoto(imageUrl);
@@ -339,7 +373,7 @@ export default function DreamPage() {
       height="250px"
     />
   );
-
+      
   async function generatePhoto(fileUrl: string) {
     await new Promise((resolve) => setTimeout(resolve, 200));
     setLoading(true);
@@ -361,7 +395,7 @@ export default function DreamPage() {
       setLoading(false);
     }, 1300);
   }
-
+  console.log(captureImage,"upload type")
   return (
     <div className="flex max-w-6xl mx-auto flex-col items-center justify-center py-2 min-h-screen">
       <Header />
@@ -412,7 +446,11 @@ export default function DreamPage() {
                       themes={rooms}
                     />
                   </div>
-                  <div className="mt-4 w-full max-w-sm">
+                  <label className='mt-3 flex align-items-center'>
+                <span>Capture image</span>
+                <Switch className='ml-2' onChange={(val)=>setCaptureImage(val)} checked={captureImage} />
+              </label>
+                 {!captureImage &&  <div className="mt-4 w-full max-w-sm">
                     <div className="flex mt-6 w-96 items-center space-x-3">
                       <NextImage
                         src="/number-3-white.svg"
@@ -424,9 +462,11 @@ export default function DreamPage() {
                         Upload a picture of your room.
                       </p>
                     </div>
-                  </div>
+                  </div>}
+                  
                 </>
               )}
+             
               {restoredImage && (
                 <div>
                   Here's your remodeled <b>{room.toLowerCase()}</b> in the{" "}
@@ -450,7 +490,12 @@ export default function DreamPage() {
                   restored={restoredImage!}
                 />
               )}
-              {!originalPhoto && <UploadDropZone />}
+
+              {!originalPhoto && !captureImage && <UploadDropZone />}
+              {!originalPhoto && captureImage &&   <div className="webcam-wrap">
+              <WebcamCapture width="670px" height="250px" onCapture={onCameraCapture} />
+              </div>}
+
               {originalPhoto && !restoredImage && (
                 <img
                   alt="original photo"
@@ -555,9 +600,7 @@ export default function DreamPage() {
               {detectedItems && detectedItems.length > 0 && <div>
                 <div id="image-map-pro" style={{ marginTop:"1rem" }}></div>
               </div>}
-              <div className="webcam-wrap">
-              <WebcamCapture/>
-              </div>
+            
             </motion.div>
           </AnimatePresence>
         </ResizablePanel>
