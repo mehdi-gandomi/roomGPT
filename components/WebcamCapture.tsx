@@ -45,7 +45,7 @@ const WebcamCapture = ({onCapture,width,height}) => {
       () => {
         navigator.mediaDevices.enumerateDevices().then(handleDevices);
       },
-      [handleDevices]
+      []
     );
   
     return (
