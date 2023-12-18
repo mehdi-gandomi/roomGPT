@@ -39,7 +39,6 @@ const WebcamCapture = ({onCapture,width,height}) => {
     // navigator.mediaDevices.enumerateDevices().then(handleDevices);
     navigator.mediaDevices.getUserMedia({audio: false, video: true})
 .then(s => {
-  stream = s
   navigator.mediaDevices.enumerateDevices().then(handleDevices)
 })
 .catch(error => {
