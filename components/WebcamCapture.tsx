@@ -8,7 +8,11 @@ const WebcamCapture = ({onCapture,width,height}) => {
     const [selectedDevice,setSelectedDevice] = React.useState(undefined);
     const webcamRef = React.useRef(null);
     const [imgSrc, setImgSrc] = React.useState(null); // initialize it
-    
+    const handleDevices = React.useCallback(
+      (mediaDevices:any) =>
+        setDevices(mediaDevices.filter(({ kind }) => kind === "videoinput")),
+      [setDevices]
+    );
     const restart=()=>{
       setImgSrc(null);
     }
@@ -32,14 +36,20 @@ const WebcamCapture = ({onCapture,width,height}) => {
     
   }, [webcamRef]);
   const getDevices=()=>{
-    navigator.mediaDevices.enumerateDevices().then(handleDevices);
+    // navigator.mediaDevices.enumerateDevices().then(handleDevices);
+    navigator.mediaDevices.getUserMedia({audio: false, video: true})
+.then(s => {
+  navigator.mediaDevices.enumerateDevices().then(handleDevices)
+})
+.catch(error => {
+  console.log('Error :', error)
+  alert(error)
+})
+
+
   }
   console.log(devices,selectedDevice)
-    const handleDevices = React.useCallback(
-      (mediaDevices:any) =>
-        setDevices(mediaDevices.filter(({ kind }) => kind === "videoinput")),
-      [setDevices]
-    );
+    
   const selectDevice=(e)=>{
     console.log(e,"select")
     setSelectedDevice(e.target.value)
