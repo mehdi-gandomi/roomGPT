@@ -31,6 +31,9 @@ const WebcamCapture = ({onCapture,width,height}) => {
     onCapture(file)
     
   }, [webcamRef]);
+  const getDevices=()=>{
+    navigator.mediaDevices.enumerateDevices().then(handleDevices);
+  }
   console.log(devices,selectedDevice)
     const handleDevices = React.useCallback(
       (mediaDevices:any) =>
@@ -41,12 +44,7 @@ const WebcamCapture = ({onCapture,width,height}) => {
     console.log(e,"select")
     setSelectedDevice(e.target.value)
   }
-    React.useEffect(
-      () => {
-        navigator.mediaDevices.enumerateDevices().then(handleDevices);
-      },
-      []
-    );
+    
   
     return (
       <>
@@ -59,7 +57,7 @@ const WebcamCapture = ({onCapture,width,height}) => {
   
           ))}
         </select>
-        
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={getDevices}>Get devices</button>
         {imgSrc ? (
         <img src={imgSrc} alt="webcam" />
       ) : (
