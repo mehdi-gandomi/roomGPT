@@ -141,7 +141,7 @@ export default function DreamPage() {
       console.log("image",image)
       formData.append('file', image, 'convert.jpg'); // 'image' is the key name, adjust filename as needed
     }
-    fetch("http://34.151.121.64/upload", {
+    fetch("https://process.smart-menu.co/upload", {
         headers: {
             'Accept': 'application/json'
         },
