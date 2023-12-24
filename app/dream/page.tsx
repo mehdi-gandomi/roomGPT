@@ -204,7 +204,7 @@ export default function DreamPage() {
                     },
                     {
                         "type": "Paragraph",
-                        "text": `Accuracy: ${item.accuracy}%`,
+                        "text": `Accuracy: ${parseInt(item.accuracy * 100)}%`,
                         "other": {
                             "id": "",
                             "classes": "",
