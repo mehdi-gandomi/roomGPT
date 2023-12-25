@@ -2,7 +2,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 import redis from "../../utils/redis";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
-
+const db = require('./db');
 // Create a new ratelimiter, that allows 5 requests per 24 hours
 const ratelimit = redis
   ? new Ratelimit({
@@ -13,6 +13,7 @@ const ratelimit = redis
   : undefined;
 
 export async function POST(request: Request) {
+  
   // Rate Limiter Code
   if (ratelimit) {
     const headersList = headers();
@@ -86,8 +87,16 @@ export async function POST(request: Request) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
+  let lastId;
+  const result=await db.query(`INSERT INTO predictions (input_image,output_image) VALUES ('${imageUrl}','${restoredImage}')`);
 
+  if(result){
+    lastId=result.insertId;
+  }
   return NextResponse.json(
-    restoredImage ? restoredImage : "Failed to restore image"
+    {
+      image:restoredImage ? restoredImage : "Failed to restore image",
+      predictionId:lastId
+    }
   );
 }
