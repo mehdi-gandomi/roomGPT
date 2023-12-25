@@ -2,8 +2,8 @@ const config = {
     db: {
       /* don't expose password or any sensitive info, done only for demo */
       host: "localhost",
-      user: "root",
-      password: "",
+      user: "room_gpt",
+      password: "GmrASj5Ptkhn3Yjs",
       database: "room_gpt",
       connectTimeout: 60000
     },
