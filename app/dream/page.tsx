@@ -390,9 +390,9 @@ export default function DreamPage() {
     let newPhoto = await res.json();
     if (res.status !== 200) {
       setError(newPhoto.image);
-      setPredictionId(newPhoto.predictionId)
     } else {
-      setRestoredImage(newPhoto[1]);
+      setRestoredImage(newPhoto.image[1]);
+      setPredictionId(newPhoto.predictionId)
     }
     setTimeout(() => {
       setLoading(false);
