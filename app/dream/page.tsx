@@ -142,8 +142,8 @@ export default function DreamPage() {
       console.log("image",image)
       formData.append('file', image, 'convert.jpg'); // 'image' is the key name, adjust filename as needed
     }
-    formData.append("predictionId",predictionId)
-    fetch("/process", {
+    // formData.append("predictionId",predictionId)
+    fetch("https://process.smart-menu.co/upload", {
         headers: {
             'Accept': 'application/json'
         },
@@ -344,6 +344,16 @@ export default function DreamPage() {
         ImageMapPro.init('#image-map-pro',json)
         setDetectLoading(false)
         },500)
+        fetch("/process",{
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+          },
+          method: "POST",
+          body: JSON.stringify({predictionId:predictionId})
+      }).then(res=>res.json()).then((res)=>{
+        console.log(res)
+      })
     })
     .catch(function(error) {
         console.error('There was a problem with the fetch operation:', error);
