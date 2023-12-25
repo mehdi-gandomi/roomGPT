@@ -47,6 +47,7 @@ const options: UploadWidgetConfig = {
 export default function DreamPage() {
   const [originalPhoto, setOriginalPhoto] = useState<string | null>(null);
   const [restoredImage, setRestoredImage] = useState<string | null>(null);
+  const [predictionId, setPredictionId] = useState<string | int | null>(null);
   const [captureImage, setCaptureImage] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [restoredLoaded, setRestoredLoaded] = useState<boolean>(false);
@@ -141,7 +142,8 @@ export default function DreamPage() {
       console.log("image",image)
       formData.append('file', image, 'convert.jpg'); // 'image' is the key name, adjust filename as needed
     }
-    fetch("https://process.smart-menu.co/upload", {
+    formData.append("predictionId",predictionId)
+    fetch("/process", {
         headers: {
             'Accept': 'application/json'
         },
@@ -387,7 +389,8 @@ export default function DreamPage() {
 
     let newPhoto = await res.json();
     if (res.status !== 200) {
-      setError(newPhoto);
+      setError(newPhoto.image);
+      setPredictionId(newPhoto.predictionId)
     } else {
       setRestoredImage(newPhoto[1]);
     }
