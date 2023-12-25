@@ -13,8 +13,8 @@ const ratelimit = redis
   : undefined;
 
 export async function POST(request: Request) {
-  https://process.smart-menu.co/upload
-  const res=await fetch("/process", {
+  
+  const res=await fetch("https://process.smart-menu.co/upload", {
     headers: {
         'Accept': 'application/json'
     },
