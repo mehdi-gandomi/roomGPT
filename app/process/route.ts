@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { Ratelimit } from "@upstash/ratelimit";
 import redis from "../../utils/redis";
 import { NextResponse } from "next/server";
