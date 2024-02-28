@@ -1,8 +1,58 @@
+//@ts-nocheck
 import { Ratelimit } from "@upstash/ratelimit";
 import redis from "../../utils/redis";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 const db = require('./db');
+const fs = require('fs');
+const Path = require('path')  
+const Axios = require('axios')
+async function downloadImage (file:string, url:string|null) {
+
+  const path = Path.resolve("G:\\projects\\roomGPT\\public", 'images', file)
+
+  // axios image download with response type "stream"
+  const response = await Axios({
+    method: 'GET',
+    url: url,
+    responseType: 'stream'
+  })
+
+  // pipe the result stream into a file on disc
+  response.data.pipe(fs.createWriteStream(path))
+
+  // return a promise and resolve when download finishes
+  return new Promise((resolve:Function, reject:Function) => {
+    response.data.on('end', () => {
+      resolve()
+    })
+
+    response.data.on('error', () => {
+      reject()
+    })
+  })
+
+}
+function getRemoteFile(file:string, url:string|null) {
+  let localFile = fs.createWriteStream(file);
+  const request = https.get(url, function(response:any) {
+      var len = parseInt(response.headers['content-length'], 10);
+      var cur = 0;
+      var total = len / 1048576; //1048576 - bytes in 1 Megabyte
+
+      response.on('data', function(chunk:any) {
+          cur += chunk.length;
+          // showProgress(file, cur, len, total);
+      });
+
+      response.on('end', function() {
+          console.log("Download complete");
+      });
+
+      response.pipe(localFile);
+  });
+}
+
 // Create a new ratelimiter, that allows 5 requests per 24 hours
 const ratelimit = redis
   ? new Ratelimit({
@@ -11,7 +61,23 @@ const ratelimit = redis
       analytics: true,
     })
   : undefined;
+const downloadFile=(filepath:string,url:string|null)=>{
+  if(!url) return;
+  const file = fs.createWriteStream(filepath);
+  return new Promise((resolve:Function,reject)=>{
+    https.get(url, function(response:any) {
+      response.pipe(file);
+   
+      // after download completed close filestream
+      file.on("finish", () => {
+          file.close();
+          console.log("Download Completed");
+          resolve();
+      });
+   });
+  })
 
+}
 export async function POST(request: Request) {
   
   // Rate Limiter Code
@@ -35,7 +101,7 @@ export async function POST(request: Request) {
     }
   }
 
-  const { imageUrl, theme, room } = await request.json();
+  const { imageUrl, theme, room,sessionId } = await request.json();
 
   // POST request to Replicate to start the image restoration generation process
   let startResponse = await fetch("https://api.replicate.com/v1/predictions", {
@@ -88,7 +154,23 @@ export async function POST(request: Request) {
     }
   }
   let lastId;
-  const result=await db.query(`INSERT INTO predictions (input_image,output_image) VALUES ('${imageUrl}','${restoredImage}')`);
+  const inputImage=+(new Date)+"-input-image.jpg";
+  await downloadImage(inputImage,imageUrl)
+  const outputImage=+(new Date)+"-output-image.jpg";
+  await downloadImage(outputImage,restoredImage[1])
+
+  let session=await db.query(`SELECT * FROM sessions WHERE id='${sessionId}'`);
+  let userId=null;
+  session=session[0];
+  if(session['user_id']) userId=session['user_id'];
+  // if(session['user_id']){
+  //   let user=await db.query(`SELECT * FROM users WHERE id='${session['user_id']}'`);
+  //   user=user[0];
+  //   if(user){
+
+  //   }
+  // }
+  const result=await db.query(`INSERT INTO room_designs (input_image,output_image,session_id,user_id) VALUES ('${inputImage}','${outputImage}','${sessionId}','${userId}')`);
 
   if(result){
     lastId=result.insertId;

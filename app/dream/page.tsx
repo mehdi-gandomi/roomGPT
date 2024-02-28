@@ -1,9 +1,9 @@
 // @ts-nocheck
 "use client";
-import { v4 as uuidv4 } from 'uuid';
+
 import { AnimatePresence, motion } from "framer-motion";
 import NextImage from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UrlBuilder } from "@bytescale/sdk";
 import { UploadWidgetConfig } from "@bytescale/upload-widget";
 import { UploadDropzone } from "@bytescale/upload-widget-react";
@@ -17,6 +17,7 @@ import Toggle from "../../components/Toggle";
 import appendNewToName from "../../utils/appendNewToName";
 import downloadPhoto from "../../utils/downloadPhoto";
 import DropDown from "../../components/DropDown";
+import { useSearchParams } from 'next/navigation'
 import { roomType, rooms, themeType, themes } from "../../utils/dropdownTypes";
 import Switch from "react-switch";
 import * as Bytescale from "@bytescale/sdk";
@@ -59,6 +60,20 @@ export default function DreamPage() {
   const [detectLoading, setDetectLoading] = useState<boolean>(false);
   const [capturedImage, setCapturedImage] = useState(null); // initialize it
   const [detectedItems, setDetectedItems] = useState<any>([]);
+  const [sessionId, setSessionId] = useState<string>("");
+  const searchParams = useSearchParams()
+  useEffect(()=>{
+    const id=searchParams.get('id');
+    if(id) {
+      localStorage.setItem("session_id",id)
+      setSessionId(id)
+    }
+  },[searchParams])
+  useEffect(()=>{
+    if(!sessionId && localStorage.getItem('session_id')){
+      setSessionId(localStorage.getItem('session_id'))
+    }
+  },[])
   const convertToBinary=async(imageUrl:any):Promise<Blob>=> {
     return new Promise(async(resolve,reject)=>{
       try {
@@ -122,19 +137,7 @@ export default function DreamPage() {
     //   
     setDetectedItems([])
     setDetectLoading(true)
-    //   // Make the POST request
-    //   const postResponse = await fetch('YOUR_POST_ENDPOINT', {
-    //     method: 'POST',
-    //     body: formData,
-    //     // You may need to set headers depending on server requirements
-    //     // headers: {
-    //     //   'Content-Type': 'multipart/form-data',
-    //     // },
-    //   });
-  
-    //   // Handle the response
-    //   const result = await postResponse.json();
-    //   console.log('POST request result:', result);
+    
     const formData = new FormData();
     const image=await convertToBinary(restoredImage)
     const dimensions:any=await getMeta(restoredImage)
@@ -142,8 +145,11 @@ export default function DreamPage() {
       console.log("image",image)
       formData.append('file', image, 'convert.jpg'); // 'image' is the key name, adjust filename as needed
     }
-    // formData.append("predictionId",predictionId)
-    fetch("https://process.smart-menu.co/upload", {
+    formData.append("image_width",dimensions.w)
+    formData.append("image_height",dimensions.h)
+    
+    formData.append("predictionId",predictionId)
+    fetch("/process", {
         headers: {
             'Accept': 'application/json'
         },
@@ -158,181 +164,17 @@ export default function DreamPage() {
     })
     .then(function(data) {
         console.log(data); // Log the parsed JSON response
-        setDetectedItems(data)
+        setDetectedItems(data.predictions)
         setTimeout(()=>{
-          const children:any=[];
-          
-          data.forEach((item:any)=>{
-            console.log("pushing")
-            children.push({
-                "id": uuidv4(),
-                "title": "Spot",
-                "x": ((item.x + ((item.w - item.x)/2)) * 100)/dimensions.w,
-                "y": ((item.y + ((item.h - item.y)/2)) * 100)/dimensions.h,
-                "tooltip_content": [
-                    {
-                        "type": "Heading",
-                        "text": item.object,
-                        "heading": "h3",
-                        "other": {
-                            "id": "",
-                            "classes": "",
-                            "css": ""
-                        },
-                        "style": {
-                            "fontFamily": "sans-serif",
-                            "fontSize": 20.8,
-                            "lineHeight": "normal",
-                            "color": "#ffffff",
-                            "textAlign": "left"
-                        },
-                        "boxModel": {
-                            "width": "auto",
-                            "height": "auto",
-                            "margin": {
-                                "top": 0,
-                                "bottom": 0,
-                                "left": 0,
-                                "right": 0
-                            },
-                            "padding": {
-                                "top": 10,
-                                "bottom": 10,
-                                "left": 10,
-                                "right": 10
-                            }
-                        },
-                        "id": uuidv4()
-                    },
-                    {
-                        "type": "Paragraph",
-                        "text": `Accuracy: ${parseInt(item.accuracy * 100)}%`,
-                        "other": {
-                            "id": "",
-                            "classes": "",
-                            "css": ""
-                        },
-                        "style": {
-                            "fontFamily": "sans-serif",
-                            "fontSize": 14,
-                            "lineHeight": 22,
-                            "color": "#ffffff",
-                            "textAlign": "left"
-                        },
-                        "boxModel": {
-                            "width": "auto",
-                            "height": "auto",
-                            "margin": {
-                                "top": 0,
-                                "bottom": 0,
-                                "left": 0,
-                                "right": 0
-                            },
-                            "padding": {
-                                "top": 10,
-                                "bottom": 10,
-                                "left": 10,
-                                "right": 10
-                            }
-                        },
-                        "id": uuidv4()
-                    },
-                    {
-                        "type": "Button",
-                        "text": "Click here",
-                        "url": "#",
-                        "script": "",
-                        "newTab": false,
-                        "other": {
-                            "id": "",
-                            "classes": "",
-                            "css": ""
-                        },
-                        "style": {
-                            "backgroundColor": "#2196f3",
-                            "borderRadius": 10,
-                            "fontFamily": "sans-serif",
-                            "fontWeight": 700,
-                            "fontSize": 14,
-                            "lineHeight": 44,
-                            "color": "#ffffff",
-                            "display": "inline-block"
-                        },
-                        "boxModel": {
-                            "width": "auto",
-                            "height": 44,
-                            "margin": {
-                                "top": 0,
-                                "bottom": 0,
-                                "left": 0,
-                                "right": 0
-                            },
-                            "padding": {
-                                "top": 10,
-                                "bottom": 10,
-                                "left": 10,
-                                "right": 10
-                            }
-                        },
-                        "id": uuidv4()
-                    }
-                ]
-            })
-          //   children.push(  {
-          //     "id": uuidv4(),
-          //     "title": "Rect",
-          //     "type": "rect",
-          //   "tooltip_content": [
-          //         {
-          //             "type": "Paragraph",
-          //             "text": item.object,
-          //             "other": {
-          //                 "id": "",
-          //                 "classes": "",
-          //                 "css": ""
-          //             },
-          //             "style": {
-          //                 "fontFamily": "sans-serif",
-          //                 "fontSize": 14,
-          //                 "lineHeight": 22,
-          //                 "color": "#ffffff",
-          //                 "textAlign": "left"
-          //             },
-          //             "boxModel": {
-          //                 "width": "auto",
-          //                 "height": "auto",
-          //                 "margin": {
-          //                     "top": 0,
-          //                     "bottom": 0,
-          //                     "left": 0,
-          //                     "right": 0
-          //                 },
-          //                 "padding": {
-          //                     "top": 10,
-          //                     "bottom": 10,
-          //                     "left": 10,
-          //                     "right": 10
-          //                 }
-          //             },
-          //             "id": uuidv4()
-          //         }
-          //     ],
-          //     "x_image_background": (item.x * 100)/dimensions.w,
-          //         "x": (item.x * 100)/dimensions.w,
-          //     "y": (item.y * 100)/dimensions.h,
-          //     "width": (item.w - item.x),
-          //     "height": (item.h - item.y),
-          //   "y_image_background": (item.x * 100)/dimensions.w
-          // })
-          })
         
+          
           const json={
             "id": "7126a99f-83aa-4496-8b96-67efaf9a3f93",
             "artboards": [
                 {
                     "background_type": "image",
                     "image_url": restoredImage,
-                    "children": children
+                    "children": data.children
                 }
             ],
             "version": "6.0.15",
@@ -344,16 +186,7 @@ export default function DreamPage() {
         ImageMapPro.init('#image-map-pro',json)
         setDetectLoading(false)
         },500)
-        fetch("/process",{
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          method: "POST",
-          body: JSON.stringify({predictionId:predictionId})
-      }).then(res=>res.json()).then((res)=>{
-        console.log(res)
-      })
+ 
     })
     .catch(function(error) {
         console.error('There was a problem with the fetch operation:', error);
@@ -394,7 +227,7 @@ export default function DreamPage() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ imageUrl: fileUrl, theme, room }),
+      body: JSON.stringify({ imageUrl: fileUrl, theme, room,sessionId }),
     });
 
     let newPhoto = await res.json();

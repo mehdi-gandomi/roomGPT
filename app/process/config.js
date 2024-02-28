@@ -1,12 +1,12 @@
 const config = {
     db: {
-      /* don't expose password or any sensitive info, done only for demo */
-      host: "localhost",
-      user: "root",
-      password: "",
-      database: "room_gpt",
-      connectTimeout: 60000
+        /* don't expose password or any sensitive info, done only for demo */
+        host: "localhost",
+        user: "root",
+        password: "",
+        database: "bazar",
+        connectTimeout: 60000
     },
     listPerPage: 10,
-  };
-  module.exports = config;
+};
+module.exports = config;
