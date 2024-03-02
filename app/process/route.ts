@@ -28,6 +28,7 @@ export async function POST(request: Request) {
 
 })
 if (!res.ok) {
+    console.log(res)
   throw new Error('Network response was not ok.');
 }
   const data=await res.json();

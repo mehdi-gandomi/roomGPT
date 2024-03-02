@@ -174,7 +174,7 @@ export default function DreamPage() {
                 {
                     "background_type": "image",
                     "image_url": restoredImage,
-                    "children": data.children
+                    "children": data.points
                 }
             ],
             "version": "6.0.15",

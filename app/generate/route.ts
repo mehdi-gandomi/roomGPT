@@ -9,7 +9,7 @@ const Path = require('path')
 const Axios = require('axios')
 async function downloadImage (file:string, url:string|null) {
 
-  const path = Path.resolve("G:\\projects\\roomGPT\\public", 'images', file)
+  const path = Path.resolve("/www/wwwroot/dev.bazar3d.ir/bazar3d/public/uploads", file)
 
   // axios image download with response type "stream"
   const response = await Axios({
@@ -161,8 +161,10 @@ export async function POST(request: Request) {
 
   let session=await db.query(`SELECT * FROM sessions WHERE id='${sessionId}'`);
   let userId=null;
-  session=session[0];
-  if(session['user_id']) userId=session['user_id'];
+  if(session){
+      session=session[0];
+  if(session && session['user_id']) userId=session['user_id'];
+  }
   // if(session['user_id']){
   //   let user=await db.query(`SELECT * FROM users WHERE id='${session['user_id']}'`);
   //   user=user[0];
