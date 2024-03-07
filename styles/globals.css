@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Madimi+One&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+
 @media (min-width: 400px) {
   .background-gradient::before {
     background: radial-gradient(
@@ -19,4 +23,44 @@
 }
 .imp-object-spot{
   opacity: 0.3;
+}
+
+.similar-elements-list {
+  background-color: white;
+  font-family: "Madimi One", sans-serif !important;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.similar-element {
+  display: flex;
+  align-content: space-between;
+  overflow-y: auto;
+  background-color: #F9F9F9;
+  color: #1b1b1ec7;
+  margin: 10px;
+  padding: 7px;
+  border-radius: 10px;
+  transition: 300ms;
+  cursor: pointer;
+}
+
+.similar-element:hover {
+  background-color: #efeded;
+  color: black;
+}
+
+
+.similar-element img {
+  width: 64px;
+  height: 64px;
+  padding: 5px;
+  border-radius: 30% 30% 30% 30% / 30% 30% 30% 30%;
+}
+
+.similar-element .title, .similar-element .price {
+  text-align: left;
+  padding: 5px;
+  /* display: flex;
+  align-items: center; */
 }
