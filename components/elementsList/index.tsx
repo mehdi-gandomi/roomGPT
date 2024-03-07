@@ -1,6 +1,8 @@
+// @ts-nocheck
 import React from "react";
 import ElementsRow from "./listRow";
 import { SimilarElement } from "../../app/models/SimilarElement";
+import jsonData from "../../app/data/new.json";
 
 const data: SimilarElement = {
   title: "Blue Faux Leather Living Room Sofad",
@@ -10,13 +12,19 @@ const data: SimilarElement = {
 };
 
 const index = () => {
+  let codes = ["B0C14PB83M", "B0C1RZB614"];
+
   return (
     <>
       <div className="similar-elements-list">
-        <ElementsRow title={data.title} price={data.price} image={data.image} />
-        <ElementsRow title={data.title} price={data.price} image={data.image} />
-        <ElementsRow title={data.title} price={data.price} image={data.image} />
-        <ElementsRow title={data.title} price={data.price} image={data.image} />
+        {codes.map((item, index) => (
+          <ElementsRow
+            key={index}
+            title={jsonData[item].title}
+            price={`$${jsonData[item].price / 57000}`}
+            image={`https://dev.bazar3d.ir/storage/app/public/product/thumbnail/${jsonData[item].img}`}
+          />
+        ))}
       </div>
     </>
   );
