@@ -1,0 +1,17 @@
+.feedback-section {
+    display: flex;
+    gap: 20px
+}
+
+.dislike,
+.like {
+    cursor: pointer;
+}
+
+.imp-container {
+    width: 100% !important;
+}
+
+.imp-canvas {
+    width: 100%;
+}

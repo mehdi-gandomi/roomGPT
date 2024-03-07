@@ -19,8 +19,12 @@ import downloadPhoto from "../../utils/downloadPhoto";
 import DropDown from "../../components/DropDown";
 import { useSearchParams } from 'next/navigation'
 import { roomType, rooms, themeType, themes } from "../../utils/dropdownTypes";
+import Like from './icons/Like'
+import Dislike from './icons/Dislike'
 import Switch from "react-switch";
 import * as Bytescale from "@bytescale/sdk";
+import ElementList from "../../components/elementsList";
+import "./style.css"
 const options: UploadWidgetConfig = {
   apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
       ? process.env.NEXT_PUBLIC_UPLOAD_API_KEY
@@ -131,6 +135,27 @@ export default function DreamPage() {
       img.src = url;
     })
     
+}
+const sendFeeback=(reaction)=>{
+  fetch("/feedback", {
+    headers: {
+        'Accept': 'application/json'
+    },
+    method: "POST",
+    body: {
+      reaction,
+      predictionId
+    }
+})
+.then(function(res) {
+    if (!res.ok) {
+        throw new Error('Network response was not ok.');
+    }
+    return res.json(); // Parse the response JSON
+})
+.then(function(data) {
+  console.log(data)
+})
 }
   const detectAndSearch=async()=>{
     // 
@@ -443,10 +468,25 @@ export default function DreamPage() {
                 </button>
               )}
               </div>
-              {detectedItems && detectedItems.length > 0 && <div>
-                <div id="image-map-pro" style={{ marginTop:"1rem" }}></div>
+              {detectedItems && detectedItems.length > 0 && <div style={{display:"flex"}}>
+                <div id="image-map-pro" style={{ marginTop:"1rem",flex:3 }}></div>
+                {detectedItems && detectedItems.length ? <div style={{flex:1,height:"750px",overflowY:"scroll"}}>
+                  {detectedItems.map(item=>(
+                    <div>
+                      <p>{item.object}</p>
+                      <ElementList items={item.data} />
+                    </div>
+                  ))}
+                </div>:null}
               </div>}
-            
+                <div className="feedback-section">
+                  <div className="like" onClick={()=>sendFeeback('like')}>
+                    <Like fill="#00d900"/>
+                  </div>
+                  <div  className="dislike" onClick={()=>sendFeeback('dislike')}>
+                    <Dislike fill="#ff4747" />
+                  </div>
+                </div>
             </motion.div>
           </AnimatePresence>
         </ResizablePanel>
