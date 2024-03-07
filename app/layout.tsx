@@ -38,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <script src="https://image.bazar360.net/image-map-pro.min.js"></script>
+        <script src="//image.bazar360.net/image-map-pro.min.js"></script>
       </head>
       <body className="bg-[#17181C] text-white">
         {children}
