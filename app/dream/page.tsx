@@ -23,6 +23,7 @@ import Like from './icons/Like'
 import Dislike from './icons/Dislike'
 import Switch from "react-switch";
 import * as Bytescale from "@bytescale/sdk";
+import ElementList from "../../components/elementsList";
 import "./style.css"
 const options: UploadWidgetConfig = {
   apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
@@ -467,8 +468,16 @@ const sendFeeback=(reaction)=>{
                 </button>
               )}
               </div>
-              {detectedItems && detectedItems.length > 0 && <div>
-                <div id="image-map-pro" style={{ marginTop:"1rem" }}></div>
+              {detectedItems && detectedItems.length > 0 && <div style={{display:"flex"}}>
+                <div id="image-map-pro" style={{ marginTop:"1rem",flex:3 }}></div>
+                {detectedItems && detectedItems.length ? <div style={{flex:1,height:"750px",overflowY:"scroll"}}>
+                  {detectedItems.map(item=>(
+                    <div>
+                      <p>{item.object}</p>
+                      <ElementList items={item.data} />
+                    </div>
+                  ))}
+                </div>:null}
               </div>}
                 <div className="feedback-section">
                   <div className="like" onClick={()=>sendFeeback('like')}>

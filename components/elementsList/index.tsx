@@ -11,20 +11,20 @@ const data: SimilarElement = {
     "https://dev.bazar3d.ir/storage/app/public/product/41xkttar8WL._AC.jpg",
 };
 
-const index = () => {
-  let codes = ["B0C14PB83M", "B0C1RZB614"];
-
+const index = (props) => {
+  let {items}=props;
+  console.log(items)
   return (
     <>
       <div className="similar-elements-list">
-        {codes.map((item, index) => (
+        {items && items.length ? items.map((item, index) => (
           <ElementsRow
             key={index}
-            title={jsonData[item].title}
-            price={`$${jsonData[item].price / 57000}`}
-            image={`https://dev.bazar3d.ir/storage/app/public/product/thumbnail/${jsonData[item].img}`}
+            title={jsonData[item.product].title}
+            price={`$${jsonData[item.product].price / 57000}`}
+            image={`https://dev.bazar3d.ir/storage/app/public/product/thumbnail/${jsonData[item.product].img}`}
           />
-        ))}
+        )):null}
       </div>
     </>
   );
