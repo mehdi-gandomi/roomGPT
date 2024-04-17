@@ -128,7 +128,7 @@ export async function POST(request: Request) {
   });
 
   let jsonStartResponse = await startResponse.json();
-
+    console.log(jsonStartResponse)
   let endpointUrl = jsonStartResponse.urls.get;
 
   // GET request to get the status of the image restoration process & return the result when it's ready
@@ -144,12 +144,13 @@ export async function POST(request: Request) {
       },
     });
     let jsonFinalResponse = await finalResponse.json();
-
+    console.log(jsonFinalResponse)
     if (jsonFinalResponse.status === "succeeded") {
       restoredImage = jsonFinalResponse.output;
     } else if (jsonFinalResponse.status === "failed") {
       break;
     } else {
+        console.log("timing out")
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
@@ -161,10 +162,8 @@ export async function POST(request: Request) {
 
   let session=await db.query(`SELECT * FROM sessions WHERE id='${sessionId}'`);
   let userId=null;
-  if(session){
-      session=session[0];
-  if(session && session['user_id']) userId=session['user_id'];
-  }
+  session=session[0];
+  if(session['user_id']) userId=session['user_id'];
   // if(session['user_id']){
   //   let user=await db.query(`SELECT * FROM users WHERE id='${session['user_id']}'`);
   //   user=user[0];

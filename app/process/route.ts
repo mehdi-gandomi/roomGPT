@@ -15,20 +15,15 @@ const ratelimit = redis
   : undefined;
 
 export async function POST(request: Request) {
-
   const formData=await request.formData();
-
   const res=await fetch("https://process.smart-menu.co/upload", {
     headers: {
         'Accept': 'application/json'
     },
     method: "POST",
-
     body: formData
-
 })
 if (!res.ok) {
-    console.log(res)
   throw new Error('Network response was not ok.');
 }
   const data=await res.json();

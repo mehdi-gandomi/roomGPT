@@ -199,7 +199,7 @@ const sendFeeback=(reaction)=>{
                 {
                     "background_type": "image",
                     "image_url": restoredImage,
-                    "children": data.points
+                    "children": data.children
                 }
             ],
             "version": "6.0.15",
