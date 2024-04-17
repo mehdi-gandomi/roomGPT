@@ -246,6 +246,7 @@ const sendFeeback=(reaction)=>{
       
   async function generatePhoto(fileUrl: string) {
     await new Promise((resolve) => setTimeout(resolve, 200));
+    setError(null)
     try{
       setLoading(true);
       const res = await fetch("/generate", {
