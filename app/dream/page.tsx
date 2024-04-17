@@ -246,25 +246,34 @@ const sendFeeback=(reaction)=>{
       
   async function generatePhoto(fileUrl: string) {
     await new Promise((resolve) => setTimeout(resolve, 200));
-    setLoading(true);
-    const res = await fetch("/generate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ imageUrl: fileUrl, theme, room,sessionId }),
-    });
+    try{
+      setLoading(true);
+      const res = await fetch("/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ imageUrl: fileUrl, theme, room,sessionId }),
+      });
 
-    let newPhoto = await res.json();
-    if (res.status !== 200) {
-      setError(newPhoto.image);
-    } else {
-      setRestoredImage(newPhoto.image[1]);
-      setPredictionId(newPhoto.predictionId)
-    }
-    setTimeout(() => {
+      let newPhoto = await res.json();
+      if (res.status !== 200) {
+        setError(newPhoto.image);
+      } else {
+        setRestoredImage(newPhoto.image[1]);
+        setPredictionId(newPhoto.predictionId)
+      }
+      setTimeout(() => {
+        setLoading(false);
+      }, 1300);
+    }catch(e){
       setLoading(false);
-    }, 1300);
+      setOriginalPhoto(null);
+      setRestoredImage(null);
+      setRestoredLoaded(false);
+      setDetectedItems([])
+      setError("an error occurred. please try again later or test with another photo");
+    }
   }
   console.log(captureImage,"upload type")
   return (
