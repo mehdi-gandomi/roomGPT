@@ -9,7 +9,7 @@ const Path = require('path')
 const Axios = require('axios')
 async function downloadImage (file:string, url:string|null) {
 
-  const path = Path.resolve("/www/wwwroot/dev.bazar3d.ir/bazar3d/public/uploads", file)
+  const path = Path.resolve("/www/wwwroot/bazar360.net/bazar3d/public/uploads", file)
 
   // axios image download with response type "stream"
   const response = await Axios({
