@@ -21,8 +21,8 @@ const index = (props) => {
           <a target="_blank" title={item.object} key={index} href={`https://bazar360.net/product/${item.product}`}>
             <ElementsRow
             
-            title={jsonData[item.product].title}
-            price={`$${jsonData[item.product].price / 57000}`}
+            title={jsonData[item.product].name}
+            price={`$${jsonData[item.product].purchase_price / 57000}`}
             image={`https://bazar360.net/storage/app/public/product/thumbnail/${jsonData[item.product].img}`}
           />
           </a>
