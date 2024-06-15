@@ -9,7 +9,7 @@ const Path = require('path')
 const Axios = require('axios')
 async function downloadImage (file:string, url:string|null) {
 
-  const path = Path.resolve("G:\\projects\\roomGPT\\public", 'images', file)
+  const path = Path.resolve("/www/wwwroot/bazar360.net/bazar3d/public/uploads", file)
 
   // axios image download with response type "stream"
   const response = await Axios({
@@ -128,7 +128,7 @@ export async function POST(request: Request) {
   });
 
   let jsonStartResponse = await startResponse.json();
-
+    console.log(jsonStartResponse)
   let endpointUrl = jsonStartResponse.urls.get;
 
   // GET request to get the status of the image restoration process & return the result when it's ready
@@ -144,12 +144,13 @@ export async function POST(request: Request) {
       },
     });
     let jsonFinalResponse = await finalResponse.json();
-
+    console.log(jsonFinalResponse)
     if (jsonFinalResponse.status === "succeeded") {
       restoredImage = jsonFinalResponse.output;
     } else if (jsonFinalResponse.status === "failed") {
       break;
     } else {
+        console.log("timing out")
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
